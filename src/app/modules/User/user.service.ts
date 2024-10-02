@@ -1,7 +1,9 @@
-import { QueryBuilder } from '../../builder/QueryBuilder';
-import { UserSearchableFields } from './user.constant';
-import { TUser } from './user.interface';
-import { User } from './user.model';
+import httpStatus from "http-status";
+import { QueryBuilder } from "../../builder/QueryBuilder";
+import AppError from "../../errors/AppError";
+import { UserSearchableFields } from "./user.constant";
+import { TUser } from "./user.interface";
+import { User } from "./user.model";
 
 const createUser = async (payload: TUser) => {
   const user = await User.create(payload);
@@ -27,9 +29,18 @@ const getSingleUserFromDB = async (id: string) => {
 
   return user;
 };
+const updateSingleUserFromDB = async (id: string, payload: Partial<TUser>) => {
+  const isUserExist = await User.findById(id);
+  if (!isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "This user does not exists");
+  }
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
+  return result;
+};
 
 export const UserServices = {
   createUser,
   getAllUsersFromDB,
   getSingleUserFromDB,
+  updateSingleUserFromDB,
 };

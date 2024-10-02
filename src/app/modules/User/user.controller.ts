@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
+import { TUser } from "./user.interface";
+import { Request, Response } from "express";
 
 const userRegister = catchAsync(async (req, res) => {
   const user = await UserServices.createUser(req.body);
@@ -36,8 +38,21 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const updateUser = catchAsync(async (req: Request, res: Response) => {
+  const user: Partial<TUser> = req.body;
+  const id: string = req.params.id;
+  const result = await UserServices.updateSingleUserFromDB(id, user);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User is updated successfully",
+    data: result,
+  });
+});
+
 export const UserControllers = {
   getSingleUser,
   userRegister,
   getAllUsers,
+  updateUser,
 };

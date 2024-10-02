@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { Model } from 'mongoose';
-import { USER_ROLE, USER_STATUS } from './user.constant';
+import { Model, Types } from "mongoose";
+import { USER_ROLE, USER_STATUS } from "./user.constant";
 
 export type TUser = {
   _id?: string;
@@ -14,6 +14,11 @@ export type TUser = {
   profilePhoto?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  bio?: string;
+  followers?: Types.ObjectId[] | [];
+  following?: Types.ObjectId[] | [];
+  posts?: Types.ObjectId[] | [];
+  subscription?: Types.ObjectId[] | [];
 };
 
 export interface IUserModel extends Model<TUser> {

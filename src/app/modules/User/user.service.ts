@@ -34,6 +34,19 @@ const updateSingleUserFromDB = async (id: string, payload: Partial<TUser>) => {
   if (!isUserExist) {
     throw new AppError(httpStatus.BAD_REQUEST, "This user does not exists");
   }
+
+  // Remove fields that should not be updated
+  delete payload.role;
+  delete payload._id;
+
+  // Ensure bio does not exceed 101 characters if present in the payload
+  if (payload.bio && payload.bio.length > 101) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Bio must be at most 101 characters long"
+    );
+  }
+
   const result = await User.findByIdAndUpdate(id, payload, { new: true });
   return result;
 };

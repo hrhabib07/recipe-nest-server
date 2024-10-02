@@ -46,6 +46,21 @@ const userSchema = new Schema<TUser, IUserModel>(
       type: String,
       default: null,
     },
+    bio: {
+      type: String,
+      default: "",
+      maxlength: [101, "Bio must be at most 101 characters long"],
+    },
+    followers: { type: [Schema.Types.ObjectId], default: [], ref: "User" },
+    following: { type: [Schema.Types.ObjectId], default: [], ref: "User" },
+    posts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
+    likedPosts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
+    dislikedPosts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
+    subscription: {
+      type: [Schema.Types.ObjectId],
+      default: [],
+      ref: "subscription",
+    },
   },
   {
     timestamps: true,

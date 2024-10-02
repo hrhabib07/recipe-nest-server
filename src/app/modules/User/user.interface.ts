@@ -18,6 +18,8 @@ export type TUser = {
   followers?: Types.ObjectId[] | [];
   following?: Types.ObjectId[] | [];
   posts?: Types.ObjectId[] | [];
+  dislikedPosts?: Types.ObjectId[] | [];
+  likedPosts?: Types.ObjectId[] | [];
   subscription?: Types.ObjectId[] | [];
 };
 

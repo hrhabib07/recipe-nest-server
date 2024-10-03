@@ -6,8 +6,8 @@ type District = (typeof DISTRICTS)[number];
 export type TItem = {
   title: string;
   description: string;
-  images?: string[];
   user: ObjectId;
+  images?: string[];
   questions?: string[];
   createdAt?: Date;
   updatedAt?: Date;

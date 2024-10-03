@@ -1,5 +1,6 @@
 import { QueryBuilder } from "../../builder/QueryBuilder";
 import { TImageFiles } from "../../interfaces/image.interface";
+import { User } from "../User/user.model";
 // import {
 //   addDocumentToIndex,
 //   deleteDocumentFromIndex,
@@ -16,8 +17,13 @@ const createItemIntoDB = async (payload: TItem, images: TImageFiles) => {
   const { itemImages } = images;
   payload.images = itemImages.map((image) => image.path);
 
+  // Create the item in the database
   const result = await Item.create(payload);
 
+  // Push the created item's ID into the user's posts array
+  await User.findByIdAndUpdate(payload.user, {
+    $push: { posts: result._id },
+  });
   // await addDocumentToIndex(result, 'items');
   return result;
 };

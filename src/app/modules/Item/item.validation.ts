@@ -14,15 +14,6 @@ const createItemValidationSchema = z.object({
     location: z.string({
       required_error: "Location is required",
     }),
-    city: z.enum(DISTRICTS, {
-      required_error: "City is required",
-    }),
-    dateFound: z.string({ message: "Date found is required" }).refine((val) => {
-      return new Date(val).toString() !== "Invalid Date";
-    }),
-    status: z.nativeEnum(ITEM_STATUS).default(ITEM_STATUS.AVAILABLE),
-    isReported: z.boolean().optional(),
-    reportCount: z.number().optional(),
     user: z
       .string({
         required_error: "User is required",
@@ -30,14 +21,37 @@ const createItemValidationSchema = z.object({
       .refine((val) => {
         return mongoose.Types.ObjectId.isValid(val);
       }),
-    category: z
-      .string({
-        required_error: "Category is required",
-      })
-      .refine((val) => {
-        return mongoose.Types.ObjectId.isValid(val);
-      }),
-    questions: z.array(z.string()).optional(),
+
+    likedUsers: z
+      .array(
+        z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+          message: "Invalid liked user ID",
+        })
+      )
+      .optional(),
+
+    dislikedUsers: z
+      .array(
+        z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+          message: "Invalid disliked user ID",
+        })
+      )
+      .optional(),
+
+    comments: z
+      .array(
+        z.object({
+          users: z
+            .string()
+            .refine((val) => mongoose.Types.ObjectId.isValid(val), {
+              message: "Invalid user ID for comment",
+            }),
+          comment: z.string({
+            required_error: "Comment is required",
+          }),
+        })
+      )
+      .optional(),
   }),
 });
 
@@ -47,24 +61,42 @@ const updateItemValidationSchema = z.object({
     description: z.string().optional(),
     image: z.string().optional(),
     location: z.string().optional(),
-    city: z.enum(DISTRICTS).optional(),
-    dateFound: z.date().optional(),
-    status: z.nativeEnum(ITEM_STATUS).optional(),
-    isReported: z.boolean().optional(),
-    reportCount: z.number().optional(),
     user: z
       .string()
       .refine((val) => {
         return mongoose.Types.ObjectId.isValid(val);
       })
       .optional(),
-    category: z
-      .string()
-      .refine((val) => {
-        return mongoose.Types.ObjectId.isValid(val);
-      })
+    likedUsers: z
+      .array(
+        z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+          message: "Invalid liked user ID",
+        })
+      )
       .optional(),
-    questions: z.array(z.string()).optional(),
+
+    dislikedUsers: z
+      .array(
+        z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
+          message: "Invalid disliked user ID",
+        })
+      )
+      .optional(),
+
+    comments: z
+      .array(
+        z.object({
+          users: z
+            .string()
+            .refine((val) => mongoose.Types.ObjectId.isValid(val), {
+              message: "Invalid user ID for comment",
+            }),
+          comment: z.string({
+            required_error: "Comment is required",
+          }),
+        })
+      )
+      .optional(),
   }),
 });
 

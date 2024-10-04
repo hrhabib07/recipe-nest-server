@@ -34,10 +34,7 @@ const getAllItemsFromDB = async (query: Record<string, unknown>) => {
   // Date range search
   query = (await SearchItemByDateRangeQueryMaker(query)) || query;
 
-  const itemQuery = new QueryBuilder(
-    Item.find().populate("user").populate("category"),
-    query
-  )
+  const itemQuery = new QueryBuilder(Item.find().populate("user"), query)
     .filter()
     .search(ItemsSearchableFields)
     .sort()

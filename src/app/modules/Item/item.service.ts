@@ -47,19 +47,43 @@ const getAllItemsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getItemFromDB = async (itemId: string) => {
-  const result = await Item.findById(itemId)
-    .populate("user")
-    .populate("category");
+  const result = await Item.findById(itemId).populate("user");
   return result;
 };
 
-const updateItemInDB = async (itemId: string, payload: TItem) => {
-  const result = await Item.findByIdAndUpdate(itemId, payload, { new: true });
-  // if (result) {
-  //   await addDocumentToIndex(result, 'items');
-  // } else {
-  //   throw new Error(`Item with ID ${itemId} not found.`);
-  // }
+const updateItemInDB = async (itemId: string, payload: Partial<TItem>) => {
+  const updateOperations: any = {};
+
+  // Check if comments are present in the payload and push to the existing comments array
+  if (payload.comments) {
+    updateOperations.$push = { comments: { $each: payload.comments } };
+  }
+
+  // Handle likes and dislikes logic
+  if (payload.likedUsers) {
+    updateOperations.$pull = { dislikedUsers: { $in: payload.likedUsers } }; // Remove user from dislikedUsers if present
+    updateOperations.$addToSet = { likedUsers: { $each: payload.likedUsers } }; // Add user to likedUsers array
+  }
+
+  if (payload.dislikedUsers) {
+    updateOperations.$pull = { likedUsers: { $in: payload.dislikedUsers } }; // Remove user from likedUsers if present
+    updateOperations.$addToSet = {
+      dislikedUsers: { $each: payload.dislikedUsers },
+    }; // Add user to dislikedUsers array
+  }
+
+  // Add other fields to the updateOperations object for generic updates
+  Object.keys(payload).forEach((key) => {
+    if (!["comments", "likedUsers", "dislikedUsers"].includes(key)) {
+      updateOperations.$set = updateOperations.$set || {};
+      updateOperations.$set[key] = (payload as any)[key];
+    }
+  });
+
+  // Perform the update operation with the constructed updateOperations object
+  const result = await Item.findByIdAndUpdate(itemId, updateOperations, {
+    new: true,
+  });
   return result;
 };
 

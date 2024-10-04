@@ -57,7 +57,6 @@ const updateItemValidationSchema = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     image: z.string().optional(),
-    location: z.string().optional(),
     user: z
       .string()
       .refine((val) => {

@@ -34,7 +34,13 @@ const getAllItemsFromDB = async (query: Record<string, unknown>) => {
   // Date range search
   query = (await SearchItemByDateRangeQueryMaker(query)) || query;
 
-  const itemQuery = new QueryBuilder(Item.find().populate("user"), query)
+  const itemQuery = new QueryBuilder(
+    Item.find().populate("user").populate({
+      path: "comments.users",
+      select: "name email profilePhoto",
+    }),
+    query
+  )
     .filter()
     .search(ItemsSearchableFields)
     .sort()

@@ -1,8 +1,6 @@
 import { ObjectId } from "mongoose";
 import { DISTRICTS, ITEM_STATUS } from "./item.constant";
 
-type District = (typeof DISTRICTS)[number];
-
 export type TItem = {
   title: string;
   description: string;

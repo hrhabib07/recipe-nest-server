@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
 import { TUser } from "./user.interface";
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 
 const userRegister = catchAsync(async (req, res) => {
   const user = await UserServices.createUser(req.body);
@@ -49,10 +50,22 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const unfollowUser = catchAsync(async (req: Request, res: Response) => {
+  const user: any = req.body;
+  const id: string = req.params.id;
+  const result = await UserServices.unfollowUserFromDB(id, user);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User is updated successfully",
+    data: result,
+  });
+});
 
 export const UserControllers = {
   getSingleUser,
   userRegister,
   getAllUsers,
   updateUser,
+  unfollowUser,
 };

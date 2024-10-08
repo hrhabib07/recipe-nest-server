@@ -4,6 +4,7 @@ import AppError from "../../errors/AppError";
 import { UserSearchableFields } from "./user.constant";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
+import { Types } from "mongoose";
 
 const createUser = async (payload: TUser) => {
   const user = await User.create(payload);
@@ -91,10 +92,45 @@ const updateSingleUserFromDB = async (id: string, payload: Partial<TUser>) => {
   const result = await User.findByIdAndUpdate(id, updateData, { new: true });
   return result;
 };
+const unfollowUserFromDB = async (id: string, payload: any) => {
+  const whoIsUnfollowing = payload.follower; // User who is unfollowing
+  const userToUnfollow = id; // User being unfollowed
+
+  // Check if the user who is being unfollowed exists
+  const isUserWhomUnfollowedExist = await User.findById(userToUnfollow);
+  if (!isUserWhomUnfollowedExist) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "This user whom you want to unfollow does not exist"
+    );
+  }
+
+  // Check if the user who is unfollowing exists
+  const isUserWhoUnfollowExist = await User.findById(whoIsUnfollowing);
+  if (!isUserWhoUnfollowExist) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "The user who is unfollowing does not exist"
+    );
+  }
+
+  // Remove the unfollowed user from the following list of the user who is unfollowing
+  await User.findByIdAndUpdate(whoIsUnfollowing, {
+    $pull: { following: userToUnfollow },
+  });
+
+  // Remove the user who is unfollowing from the followers list of the unfollowed user
+  await User.findByIdAndUpdate(userToUnfollow, {
+    $pull: { followers: whoIsUnfollowing },
+  });
+
+  return { message: "Successfully unfollowed the user" };
+};
 
 export const UserServices = {
   createUser,
   getAllUsersFromDB,
   getSingleUserFromDB,
   updateSingleUserFromDB,
+  unfollowUserFromDB,
 };

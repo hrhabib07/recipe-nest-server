@@ -18,3 +18,4 @@ router.post(
 router.get("/", UserControllers.getAllUsers);
 router.get("/:id", UserControllers.getSingleUser);
 router.put("/:id", UserControllers.updateUser);
+router.put("/unfollow/:id", UserControllers.unfollowUser);

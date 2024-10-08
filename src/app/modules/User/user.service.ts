@@ -19,13 +19,20 @@ const getAllUsersFromDB = async (query: Record<string, unknown>) => {
     .filter()
     .search(UserSearchableFields);
 
+  // Populate the followers and following fields
+  users.modelQuery = users.modelQuery
+    .populate("followers", "profilePhoto name followers following")
+    .populate("following", "profilePhoto name followers following");
+
   const result = await users.modelQuery;
 
   return result;
 };
 
 const getSingleUserFromDB = async (id: string) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id)
+    .populate("followers", "profilePhoto name followers following")
+    .populate("following", "profilePhoto name followers following");
 
   return user;
 };

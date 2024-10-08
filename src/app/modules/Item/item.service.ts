@@ -37,7 +37,7 @@ const getAllItemsFromDB = async (query: Record<string, unknown>) => {
   const itemQuery = new QueryBuilder(
     Item.find().populate("user").populate({
       path: "comments.users",
-      select: "name email profilePhoto",
+      select: "_id name email profilePhoto",
     }),
     query
   )

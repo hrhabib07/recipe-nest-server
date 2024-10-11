@@ -80,7 +80,7 @@ const sendEmail = async (email: string, resetLink: string, subject: string) => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://your-logo-url.com/logo.png" alt="Recipe Nest Logo">
+          <img src="https://res.cloudinary.com/daqvhd097/image/upload/v1728659707/svgviewer-png-output_mnji0p.png" alt="Recipe Nest Logo">
         </div>
         <div class="content">
           <h2>Reset Your Password</h2>

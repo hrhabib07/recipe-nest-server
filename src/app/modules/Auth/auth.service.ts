@@ -7,6 +7,7 @@ import { createToken } from "../../utils/verifyJWT";
 import { USER_ROLE } from "../User/user.constant";
 import { User } from "../User/user.model";
 import { TLoginUser, TRegisterUser } from "./auth.interface";
+import { EmailHelper } from "../../utils/emailSender";
 
 const registerUser = async (payload: TRegisterUser) => {
   // checking if the user is exist
@@ -200,9 +201,84 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const forgetPassword = async (email: string) => {
+  // checking if the user exists
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found!");
+  }
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+  };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    "10m"
+  );
+
+  const resetUILink = `${config.reset_password_ui_link}?id=${user.id}&token=${resetToken}`;
+
+  // Send email with the reset link and proper subject
+  await EmailHelper.sendEmail(
+    user.email,
+    resetUILink,
+    "Password Reset - Recipe Nest"
+  );
+
+  console.log(resetUILink);
+};
+
+const resetPassword = async (
+  payload: { email: string; newPassword: string },
+  token: string
+) => {
+  // checking if the user is exist
+  const user = await User.findOne({ email: payload.email });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
+  }
+
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+
+  //localhost:3000?id=A-0001&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDI4NTA2MTcsImV4cCI6MTcwMjg1MTIxN30.-T90nRaz8-KouKki1DkCSMAbsHyb9yDi0djZU3D6QO4
+
+  if (payload.email !== decoded.email) {
+    console.log(payload.email, decoded.email);
+    throw new AppError(httpStatus.FORBIDDEN, "You are forbidden!");
+  }
+
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds)
+  );
+
+  await User.findOneAndUpdate(
+    {
+      email: decoded.email,
+      role: decoded.role,
+    },
+    {
+      password: newHashedPassword,
+      needsPasswordChange: false,
+      passwordChangedAt: new Date(),
+    }
+  );
+};
+
 export const AuthServices = {
   registerUser,
   loginUser,
   changePassword,
   refreshToken,
+  resetPassword,
+  forgetPassword,
 };

@@ -23,4 +23,5 @@ export default {
   //   meilisearch_master_key: process.env.MEILISEARCH_MASTER_KEY,
   sender_email: process.env.SENDER_EMAIL,
   sender_app_password: process.env.SENDER_APP_PASS,
+  reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK,
 };

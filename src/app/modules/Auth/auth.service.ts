@@ -220,7 +220,7 @@ const forgetPassword = async (email: string) => {
     "10m"
   );
 
-  const resetUILink = `${config.reset_password_ui_link}?email=${user.email}&token=${resetToken}`;
+  const resetUILink = `${config.reset_password_ui_link}/reset-password?email=${user.email}&token=${resetToken}`;
 
   // Send email with the reset link and proper subject
   await EmailHelper.sendEmail(
@@ -228,8 +228,6 @@ const forgetPassword = async (email: string) => {
     resetUILink,
     "Password Reset - Recipe Nest"
   );
-
-  console.log(resetUILink);
 };
 
 const resetPassword = async (
@@ -251,7 +249,6 @@ const resetPassword = async (
   //localhost:3000?id=A-0001&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJBLTAwMDEiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDI4NTA2MTcsImV4cCI6MTcwMjg1MTIxN30.-T90nRaz8-KouKki1DkCSMAbsHyb9yDi0djZU3D6QO4
 
   if (payload.email !== decoded.email) {
-    console.log(payload.email, decoded.email);
     throw new AppError(httpStatus.FORBIDDEN, "You are forbidden!");
   }
 

@@ -24,4 +24,8 @@ export default {
   sender_email: process.env.SENDER_EMAIL,
   sender_app_password: process.env.SENDER_APP_PASS,
   reset_password_ui_link: process.env.RESET_PASSWORD_UI_LINK,
+  next_public_stripe_publishable_key:
+    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  stripe_secret_key: process.env.STRIPE_SECRET_KEY,
+  frontend_url: process.env.FRONTEND_URL,
 };

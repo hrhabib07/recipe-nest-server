@@ -228,7 +228,7 @@ const forgetPassword = async (email: string) => {
     resetUILink,
     "Password Reset - Recipe Nest"
   );
-};
+  };
 
 const resetPassword = async (
   payload: { email: string; newPassword: string },

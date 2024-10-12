@@ -53,7 +53,10 @@ const getAllItemsFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getItemFromDB = async (itemId: string) => {
-  const result = await Item.findById(itemId).populate("user");
+  const result = await Item.findById(itemId).populate("user").populate({
+    path: "comments.users",
+    select: "_id name email profilePhoto",
+  });
   return result;
 };
 

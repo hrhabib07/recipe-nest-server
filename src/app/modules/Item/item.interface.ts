@@ -12,4 +12,5 @@ export type TItem = {
   likedUsers?: ObjectId[];
   dislikedUsers?: ObjectId[];
   comments?: { users: ObjectId; comment: string }[];
+  contentType?: "Free" | "Premium"; // Add contentType field
 };

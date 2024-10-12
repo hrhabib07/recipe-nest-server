@@ -18,7 +18,7 @@ const createItemValidationSchema = z.object({
       .refine((val) => {
         return mongoose.Types.ObjectId.isValid(val);
       }),
-
+    contentType: z.enum(["Free", "Premium"]).optional().default("Free"),
     likedUsers: z
       .array(
         z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {
@@ -70,7 +70,7 @@ const updateItemValidationSchema = z.object({
         })
       )
       .optional(),
-
+    contentType: z.enum(["Free", "Premium"]).optional().default("Free"),
     dislikedUsers: z
       .array(
         z.string().refine((val) => mongoose.Types.ObjectId.isValid(val), {

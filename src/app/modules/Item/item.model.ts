@@ -16,7 +16,11 @@ const itemSchema = new Schema<TItem>(
       type: [String],
       default: [],
     },
-
+    contentType: {
+      type: String,
+      enum: ["Free", "Premium"], // Restrict to Free or Premium
+      default: "Free", // Set default value to Free
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",

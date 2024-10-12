@@ -20,7 +20,11 @@ export type TUser = {
   posts?: Types.ObjectId[] | [];
   dislikedPosts?: Types.ObjectId[] | [];
   likedPosts?: Types.ObjectId[] | [];
-  subscription?: Types.ObjectId[] | [];
+  subscription?: {
+    _id: Types.ObjectId;
+    createdAt: Date;
+    validUntil: string;
+  } | null;
 };
 
 export interface IUserModel extends Model<TUser> {

@@ -56,10 +56,16 @@ const userSchema = new Schema<TUser, IUserModel>(
     posts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
     likedPosts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
     dislikedPosts: { type: [Schema.Types.ObjectId], default: [], ref: "posts" },
+    // Single subscription object, not an array
     subscription: {
-      type: [Schema.Types.ObjectId],
-      default: [],
-      ref: "subscription",
+      _id: {
+        type: Schema.Types.ObjectId,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      validUntil: Date, // Expiry date of the subscription
     },
   },
   {

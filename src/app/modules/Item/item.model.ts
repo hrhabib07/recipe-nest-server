@@ -49,6 +49,12 @@ const itemSchema = new Schema<TItem>(
         },
       },
     ],
+    // ratings: [
+    //   {
+    //     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    //     score: { type: Number, required: true, min: 3.5, max: 4.9 }, // Ratings between 3.5 to 4.9
+    //   },
+    // ],
   },
   {
     timestamps: true,

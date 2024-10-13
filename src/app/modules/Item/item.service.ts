@@ -62,7 +62,7 @@ const getItemFromDB = async (itemId: string) => {
 
 const updateItemInDB = async (itemId: string, payload: Partial<TItem>) => {
   const updateOperations: any = {};
-  console.log("payload: ", payload);
+  // console.log("payload: ", payload);
   // Check if comments are present in the payload and push to the existing comments array
   if (payload.comments) {
     updateOperations.$push = { comments: { $each: payload.comments } };
@@ -88,7 +88,7 @@ const updateItemInDB = async (itemId: string, payload: Partial<TItem>) => {
       updateOperations.$set[key] = (payload as any)[key];
     }
   });
-  console.log("options", updateOperations);
+  // console.log("options", updateOperations);
 
   // Perform the update operation with the constructed updateOperations object
   const result = await Item.findByIdAndUpdate(itemId, updateOperations, {

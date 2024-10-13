@@ -12,10 +12,17 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://recipe-nest.vercel.app"], // Ensure your frontend URL is listed here
-    credentials: true,
+    origin: [
+      "http://localhost:3000", // Local development
+      "https://recipe-nest.vercel.app", // Original allowed frontend domain
+      "https://recipe-nest-client.vercel.app", // New frontend URL after deployment
+    ],
+    credentials: true, // Allow credentials like cookies to be sent in requests
   })
 );
+
+// Preflight request handler
+app.options("*", cors());
 
 app.use(cookieParser());
 

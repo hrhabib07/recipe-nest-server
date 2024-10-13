@@ -24,10 +24,7 @@ const moduleRoutes = [
     path: "/stripe",
     route: StripeRoutes,
   },
-  {
-    path: "/stripe",
-    route: StripeWebhookRoutes,
-  },
+  { path: "/stripe-webhook", route: StripeWebhookRoutes },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

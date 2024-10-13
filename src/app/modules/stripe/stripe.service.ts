@@ -12,6 +12,7 @@ const stripe = new Stripe(config.stripe_secret_key as string, {
 });
 
 const createPaymentSession = async (price: number, userEmail: string) => {
+  console.log("price,", price, "userEmail:", userEmail);
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],

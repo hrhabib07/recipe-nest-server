@@ -17,6 +17,7 @@ app.use(
       "https://recipe-nest.vercel.app", // Original allowed frontend domain
       "https://recipe-nest-client.vercel.app", // New frontend URL after deployment
     ],
+    methods: ["GET", "POST"], // Specify allowed methods
     credentials: true, // Allow credentials like cookies to be sent in requests
   })
 );

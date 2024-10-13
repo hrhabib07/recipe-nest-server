@@ -12,7 +12,6 @@ const stripe = new Stripe(config.stripe_secret_key as string, {
 });
 
 const createPaymentSession = async (price: number, userEmail: string) => {
-  // console.log(price, userEmail);
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -33,43 +32,31 @@ const createPaymentSession = async (price: number, userEmail: string) => {
       success_url: `${config.frontend_url}/success`,
       cancel_url: `${config.frontend_url}/cancel`,
     });
+
     const user = await User.findOne({ email: userEmail });
     if (!user) {
       throw new AppError(httpStatus.NOT_FOUND, "User not found");
     }
 
+    // Subscription logic
     let validUntil;
     const currentDate = new Date();
+    validUntil = price > 1 ? addDays(currentDate, 30) : addDays(currentDate, 1);
 
-    // Set subscription validity based on the price
-    if (price > 1) {
-      validUntil = addDays(currentDate, 30);
-    } else {
-      validUntil = addDays(currentDate, 1);
-    }
-
-    // Only update the user's subscription if payment is successful
-    const userId = user._id;
-    if (userId) {
-      await User.findByIdAndUpdate(
-        userId,
-        {
-          subscription: {
-            _id: new Types.ObjectId(), // Generate a new subscription ID
-            createdAt: currentDate,
-            validUntil: validUntil,
-          },
+    if (user._id) {
+      await User.findByIdAndUpdate(user._id, {
+        subscription: {
+          _id: new Types.ObjectId(),
+          createdAt: currentDate,
+          validUntil,
         },
-        { new: true }
-      );
-      return session;
+      });
     }
-    // console.log("session", session?.data?.url);
+
+    return session;
   } catch (error) {
-    throw new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
-      "Stripe payment error"
-    );
+    console.error("Error creating Stripe session:", error);
+    return null; // Or you can throw a custom error
   }
 };
 

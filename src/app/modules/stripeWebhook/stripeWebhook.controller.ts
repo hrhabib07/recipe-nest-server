@@ -21,7 +21,18 @@ const handleStripeWebhook = catchAsync(async (req: Request, res: Response) => {
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
   } catch (err) {
-    throw new AppError(httpStatus.BAD_REQUEST, `Webhook Error: ${err.message}`);
+    // Use a type guard to check if 'err' is an instance of Error
+    if (err instanceof Error) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Webhook Error: ${err.message}`
+      );
+    } else {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        `Webhook Error: Unknown error`
+      );
+    }
   }
 
   // Handle the event
